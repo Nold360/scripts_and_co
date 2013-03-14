@@ -1,4 +1,4 @@
-SHT11 on Raspberry toolkit
+SHT1x on Raspberry toolkit
 
 Simple commandline tools to read out the SHT11 Sensor on a Raspberry Pi.
 Based on bcm2835-1.22 and "RaspberryPi_SHT1x_01November2012".
