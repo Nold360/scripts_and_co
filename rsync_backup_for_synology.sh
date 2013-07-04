@@ -38,6 +38,7 @@ esac
 # END OF OPTION
 ##################################################
 
+[ ! -d "$BACKUP_DIR" ] && ( mkdir -p "$BACKUP_DIR" || echo "Couldn't create \"$BACKUP_DIR\"" && exit 1)
 
 #rotate if KEEP is reached
 BACKUP_NR=0
@@ -66,13 +67,18 @@ for sourcedir in `cat ${SOURCE_DIR_FILE}` ; do
 		RET=$?
 	fi
 
+	#Send Mail @ Error
 	if [ $RET -ne 0 -a $MAIL_AT_ERROR -eq 1 ] ; then
 		echo "ERROR when backing up \"${sourcedir}\"" | nail -s"BACKUP: \"${BACKUP_TYPE}\" FAILED" ${MAIL_ADDRESSES[@]}
 		FAILED=1
-	elif [ $RET -ne 0 ] ; then
+	fi
+	
+	#Log at error
+	if [ $RET -ne 0 ] ; then
 		logger -p user.crit "BACKUP-"${BACKUP_TYPE}": FAILED at ${sourcedir}"
 	fi
 done
 
+#Log success if backup didn't fail
 [ $FAILED -eq 0 ] && logger -p user.crit "BACKUP-"${BACKUP_TYPE}": SUCCESSFULL"
 exit $FAILED
